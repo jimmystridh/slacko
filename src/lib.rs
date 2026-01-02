@@ -163,7 +163,7 @@ pub use blocks::{
 };
 
 // Re-export common types
-pub use types::{Channel, Message, MessageFile, ResponseMetadata, User};
+pub use types::{Channel, Message, ResponseMetadata, User};
 
 // Re-export common API request types
 pub use api::conversations::ConversationHistoryRequest;

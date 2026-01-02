@@ -122,8 +122,7 @@ async fn test_socket_mode_events_api_envelope() {
     assert!(envelope.payload.is_some());
 
     // Parse the payload
-    let payload: EventsApiPayload =
-        serde_json::from_value(envelope.payload.unwrap()).unwrap();
+    let payload: EventsApiPayload = serde_json::from_value(envelope.payload.unwrap()).unwrap();
     assert_eq!(payload.team_id, Some("T12345".to_string()));
     assert_eq!(payload.api_app_id, Some("A12345".to_string()));
     assert!(payload.event.is_some());
@@ -169,8 +168,7 @@ async fn test_socket_mode_interactive_envelope() {
     assert!(envelope.accepts_response_payload);
 
     // Parse the payload
-    let payload: InteractivePayload =
-        serde_json::from_value(envelope.payload.unwrap()).unwrap();
+    let payload: InteractivePayload = serde_json::from_value(envelope.payload.unwrap()).unwrap();
     assert_eq!(payload.interaction_type, "block_actions");
     assert!(payload.user.is_some());
     assert_eq!(payload.user.as_ref().unwrap().id, "U12345");
@@ -209,8 +207,7 @@ async fn test_socket_mode_slash_command_envelope() {
     assert!(envelope.accepts_response_payload);
 
     // Parse the payload
-    let payload: SlashCommandPayload =
-        serde_json::from_value(envelope.payload.unwrap()).unwrap();
+    let payload: SlashCommandPayload = serde_json::from_value(envelope.payload.unwrap()).unwrap();
     assert_eq!(payload.command, "/weather");
     assert_eq!(payload.text, Some("London".to_string()));
     assert_eq!(payload.user_id, "U12345");
@@ -307,8 +304,7 @@ async fn test_socket_mode_view_submission_envelope() {
     let envelope: SocketModeEnvelope = serde_json::from_str(view_json).unwrap();
     assert_eq!(envelope.envelope_type, "interactive");
 
-    let payload: InteractivePayload =
-        serde_json::from_value(envelope.payload.unwrap()).unwrap();
+    let payload: InteractivePayload = serde_json::from_value(envelope.payload.unwrap()).unwrap();
     assert_eq!(payload.interaction_type, "view_submission");
     assert!(payload.view.is_some());
     assert!(payload.trigger_id.is_some());
