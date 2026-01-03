@@ -9,8 +9,8 @@ A comprehensive Rust SDK for the Slack API with support for both standard OAuth 
 ## Features
 
 - Multiple authentication methods: OAuth tokens (xoxp, xoxb) and stealth mode (xoxc/xoxd)
-- Complete API coverage: 24 API modules covering all major Slack functionality
-- Real-time messaging via WebSocket (RTM API)
+- Complete API coverage: 25 API modules covering all major Slack functionality
+- Real-time messaging via WebSocket (RTM API and Socket Mode)
 - Block Kit builders for rich message layouts
 - Strongly typed requests and responses
 - Built on tokio for async/await support
@@ -22,7 +22,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-slacko = "0.1"
+slacko = "0.2"
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -163,12 +163,42 @@ let results = client.search().messages("query").await?;
 let files = client.search().files("filename").await?;
 ```
 
-### Real-Time Messaging
+### Real-Time Messaging (RTM)
 
 ```rust
 // Connect and listen for messages
 client.rtm().start(|message| {
     println!("Received: {:?}", message.text);
+}).await?;
+```
+
+### Socket Mode
+
+Socket Mode allows receiving events via WebSocket without exposing a public HTTP endpoint.
+Requires an app-level token (`xapp-...`).
+
+```rust
+// Listen for events, interactive payloads, and slash commands
+client.socket_mode().start(|event| {
+    match event.payload {
+        SocketModePayload::EventsApi(payload) => {
+            println!("Event: {:?}", payload.event);
+        }
+        SocketModePayload::Interactive(payload) => {
+            println!("Interaction: {}", payload.interaction_type);
+        }
+        SocketModePayload::SlashCommand(payload) => {
+            println!("Command: {} {}", payload.command, payload.text.unwrap_or_default());
+        }
+        _ => {}
+    }
+    None // Optional response payload
+}).await?;
+
+// With automatic reconnection
+client.socket_mode().start_with_reconnect(|event| {
+    // Handle events...
+    None
 }).await?;
 ```
 
@@ -212,7 +242,8 @@ client.chat().post_message_with_blocks("#general", "Build update", blocks).await
 | `pins` | Pinned messages |
 | `reactions` | Emoji reactions |
 | `reminders` | Reminders |
-| `rtm` | Real-time messaging |
+| `rtm` | Real-time messaging (legacy) |
+| `socket_mode` | Socket Mode for WebSocket events |
 | `search` | Message and file search |
 | `stars` | Starred items |
 | `team` | Team information |
