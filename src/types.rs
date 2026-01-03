@@ -83,6 +83,9 @@ pub struct Channel {
     pub created: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub num_members: Option<u32>,
+    /// For DMs (is_im=true), the user ID of the other participant
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
 }
 
 /// Channel topic
@@ -114,6 +117,7 @@ pub struct Message {
     pub user: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bot_id: Option<String>,
+    #[serde(default)]
     pub text: String,
     pub ts: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -124,6 +128,8 @@ pub struct Message {
     pub attachments: Option<Vec<Attachment>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reactions: Option<Vec<Reaction>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<File>>,
 }
 
 /// Message attachment

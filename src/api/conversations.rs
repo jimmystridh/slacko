@@ -48,6 +48,20 @@ impl ConversationsApi {
         self.client.post("conversations.list", &params).await
     }
 
+    /// List direct message conversations
+    ///
+    /// Returns DMs (im) for the authenticated user.
+    pub async fn list_dms(&self, limit: Option<u32>) -> Result<ListConversationsResponse> {
+        let limit_str = limit.unwrap_or(100).to_string();
+        let params = [
+            ("types", "im"),
+            ("exclude_archived", "true"),
+            ("limit", &limit_str),
+        ];
+
+        self.client.get("conversations.list", &params).await
+    }
+
     /// Get information about a conversation
     ///
     /// # Arguments
